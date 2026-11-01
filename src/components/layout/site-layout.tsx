@@ -127,22 +127,6 @@ export function SiteLayout() {
       <main className="flex-1">
         <Outlet />
       </main>
-
-      <footer className="border-t">
-        <div className="text-muted-foreground mx-auto flex w-full max-w-[1280px] flex-wrap items-center justify-between gap-4 px-5 py-6 text-sm">
-          <span>
-            © {new Date().getFullYear()} {siteInfo.name}
-          </span>
-          <span>{siteInfo.slogan}</span>
-          <a
-            href="#inicio"
-            className="hover:text-primary group flex items-center gap-1 transition-colors"
-          >
-            Voltar ao topo
-            <ArrowUp className="size-4 transition-transform group-hover:-translate-y-1" />
-          </a>
-        </div>
-      </footer>
     </div>
   )
 }

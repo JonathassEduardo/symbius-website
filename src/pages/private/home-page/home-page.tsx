@@ -5,6 +5,7 @@ import { pillars, siteInfo, solutions, whatsappLink } from '@/lib/site-content'
 import { HeroScene, SectionDecor } from './components/hero-scene'
 import { Reveal } from './components/reveal'
 import { TiltCard } from './components/tilt-card'
+import { SiteFooter } from './components/site-footer'
 
 function riseDelay(milliseconds: number): CSSProperties {
   return { animationDelay: `${milliseconds}ms` }
@@ -69,7 +70,7 @@ export function HomePage() {
             className="text-brand-panel-foreground/70 mt-6 max-w-xl text-lg motion-safe:animate-rise"
           >
             O Symbius conecta clínicas e pacientes em um só lugar, com gestão simples, informação
-              segura e cuidado que acompanha cada etapa.
+            segura e cuidado que acompanha cada etapa.
           </p>
 
           <div style={riseDelay(550)} className="mt-10 flex flex-wrap gap-3 motion-safe:animate-rise">
@@ -108,9 +109,9 @@ export function HomePage() {
         <div className="relative mx-auto w-full max-w-[1280px] px-5 py-24">
           <Reveal>
             <h2 className="max-w-2xl text-4xl font-semibold">Onde a saúde encontra a tecnologia</h2>
-              <p className="text-muted-foreground mt-4 max-w-2xl text-lg">
-                Acreditamos que o cuidado evolui quando pessoas e tecnologia trabalham juntas.
-              </p>
+            <p className="text-muted-foreground mt-4 max-w-2xl text-lg">
+              Acreditamos que o cuidado evolui quando pessoas e tecnologia trabalham juntas.
+            </p>
           </Reveal>
 
           <div className="mt-10 grid gap-5 md:grid-cols-3">
@@ -130,7 +131,7 @@ export function HomePage() {
       </section>
 
       <section id="solucoes" className="bg-muted relative scroll-mt-16 overflow-hidden">
-        <SectionDecor/>
+        <SectionDecor />
 
         <div className="relative mx-auto w-full max-w-[1280px] px-5 py-24">
           <Reveal>
@@ -185,6 +186,8 @@ export function HomePage() {
           </div>
         </Reveal>
       </section>
+
+      <SiteFooter />
     </>
   )
 }
