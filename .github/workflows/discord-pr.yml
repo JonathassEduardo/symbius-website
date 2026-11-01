@@ -1,0 +1,123 @@
+name: Symbius Assistant - GitHub Notifications
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - ready_for_review
+      - closed
+
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  notify-discord:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Prepare notification
+        id: notification
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          PR_ACTION: ${{ github.event.action }}
+          PR_MERGED: ${{ github.event.pull_request.merged }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+          PR_BRANCH: ${{ github.event.pull_request.head.ref }}
+          BASE_BRANCH: ${{ github.event.pull_request.base.ref }}
+          PUSH_AUTHOR: ${{ github.actor }}
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+          COMMIT_COUNT: ${{ toJson(github.event.commits) }}
+          COMMIT_URL: ${{ github.event.head_commit.url }}
+        run: |
+          REPO_NAME="symbius-website"
+
+          if [ "$EVENT_NAME" = "push" ]; then
+            COMMIT_TOTAL=$(printf '%s' "$COMMIT_COUNT" | jq 'length')
+            COMMIT_TITLE=$(printf '%s' "$COMMIT_MESSAGE" | head -n 1)
+
+            echo "title=🚀 Push enviado para main" >> "$GITHUB_OUTPUT"
+            echo "description<<NOTIF_END_DELIM" >> "$GITHUB_OUTPUT"
+            echo "**Repositório:** $REPO_NAME" >> "$GITHUB_OUTPUT"
+            echo "**Autor:** @$PUSH_AUTHOR" >> "$GITHUB_OUTPUT"
+            echo "**Commits enviados:** $COMMIT_TOTAL" >> "$GITHUB_OUTPUT"
+            echo "**Último commit:** $COMMIT_TITLE" >> "$GITHUB_OUTPUT"
+            echo "[Ver commit]($COMMIT_URL)" >> "$GITHUB_OUTPUT"
+            echo "NOTIF_END_DELIM" >> "$GITHUB_OUTPUT"
+            echo "color=3447003" >> "$GITHUB_OUTPUT"
+          else
+            case "$PR_ACTION" in
+              opened)
+                TITLE="🆕 Nova Pull Request aberta"
+                COLOR=3447003
+                ;;
+              reopened)
+                TITLE="🔄 Pull Request reaberta"
+                COLOR=3447003
+                ;;
+              synchronize)
+                TITLE="📤 Novos commits na PR"
+                COLOR=3447003
+                ;;
+              ready_for_review)
+                TITLE="👀 PR pronta para revisão"
+                COLOR=3447003
+                ;;
+              closed)
+                if [ "$PR_MERGED" = "true" ]; then
+                  TITLE="✅ Pull Request mergeada"
+                  COLOR=3066993
+                else
+                  TITLE="❌ Pull Request fechada sem merge"
+                  COLOR=15158332
+                fi
+                ;;
+            esac
+
+            echo "title=$TITLE" >> "$GITHUB_OUTPUT"
+            echo "description<<NOTIF_END_DELIM" >> "$GITHUB_OUTPUT"
+            echo "**[$REPO_NAME #$PR_NUMBER] $PR_TITLE**" >> "$GITHUB_OUTPUT"
+            echo "**Autor:** @$PR_AUTHOR" >> "$GITHUB_OUTPUT"
+            echo "**Branches:** \`$PR_BRANCH\` → \`$BASE_BRANCH\`" >> "$GITHUB_OUTPUT"
+            echo "[Abrir Pull Request]($PR_URL)" >> "$GITHUB_OUTPUT"
+            echo "NOTIF_END_DELIM" >> "$GITHUB_OUTPUT"
+            echo "color=$COLOR" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Send notification to Discord
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          NOTIFICATION_TITLE: ${{ steps.notification.outputs.title }}
+          NOTIFICATION_DESCRIPTION: ${{ steps.notification.outputs.description }}
+          NOTIFICATION_COLOR: ${{ steps.notification.outputs.color }}
+        run: |
+          PAYLOAD=$(jq -n \
+            --arg title "$NOTIFICATION_TITLE" \
+            --arg description "$NOTIFICATION_DESCRIPTION" \
+            --argjson color "$NOTIFICATION_COLOR" \
+            '{
+              username: "Symbius Assistant",
+              embeds: [{
+                title: $title,
+                description: $description,
+                color: $color,
+                footer: {
+                  text: "Symbius Assistant • GitHub"
+                }
+              }]
+            }')
+
+          curl --fail-with-body --silent --show-error \
+            -H "Content-Type: application/json" \
+            -X POST \
+            -d "$PAYLOAD" \
+            "$DISCORD_WEBHOOK_URL"

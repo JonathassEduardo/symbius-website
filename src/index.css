@@ -1,0 +1,164 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "@fontsource-variable/figtree";
+@import "@fontsource-variable/fraunces";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+    --font-heading: var(--font-serif);
+    --font-sans: 'Figtree Variable', system-ui, sans-serif;
+    --font-serif: 'Fraunces Variable', Georgia, serif;
+
+    --animate-float: float 8s ease-in-out infinite;
+    --animate-twinkle: twinkle 4s ease-in-out infinite;
+    --animate-flap: flap 0.9s ease-in-out infinite;
+    --animate-drift: drift 16s ease-in-out infinite;
+    --animate-rise: rise 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+    --animate-shimmer: shimmer 6s linear infinite;
+    --animate-drop: drop 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+    --animate-ecg: ecg 4s linear infinite;
+
+    --color-brand-accent: var(--brand-accent);
+    --color-brand-panel: var(--brand-panel);
+    --color-brand-panel-foreground: var(--brand-panel-foreground);
+    --color-champagne: var(--champagne);
+
+    --color-ring: var(--ring);
+    --color-input: var(--input);
+    --color-border: var(--border);
+    --color-destructive: var(--destructive);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-accent: var(--accent);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-muted: var(--muted);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-secondary: var(--secondary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-primary: var(--primary);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-popover: var(--popover);
+    --color-card-foreground: var(--card-foreground);
+    --color-card: var(--card);
+    --color-foreground: var(--foreground);
+    --color-background: var(--background);
+
+    --radius-sm: calc(var(--radius) * 0.6);
+    --radius-md: calc(var(--radius) * 0.8);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) * 1.4);
+    --radius-2xl: calc(var(--radius) * 1.8);
+    --radius-3xl: calc(var(--radius) * 2.2);
+    --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+:root {
+    --background: #ffffff;
+    --foreground: #001840;
+    --card: #ffffff;
+    --card-foreground: #001840;
+    --popover: #ffffff;
+    --popover-foreground: #001840;
+    --primary: #087078;
+    --primary-foreground: #ffffff;
+    --secondary: #e9f4f4;
+    --secondary-foreground: #001840;
+    --muted: #e9f4f4;
+    --muted-foreground: #5d6580;
+    --accent: #e9f4f4;
+    --accent-foreground: #087078;
+    --destructive: oklch(0.577 0.245 27.325);
+    --border: #dfe9ec;
+    --input: #dfe9ec;
+    --ring: #087078;
+    --radius: 0.75rem;
+
+    --brand-accent: #2f9aa0;
+    --brand-panel: #001840;
+    --brand-panel-foreground: #fcfcfa;
+    --champagne: #d8c7a0;
+}
+
+/* Symbius — dark: azul-marinho profundo, petróleo mais claro p/ contraste */
+.dark {
+    --background: #121416;
+    --foreground: #f2f4f5;
+    --card: #1a1d20;
+    --card-foreground: #f2f4f5;
+    --popover: #1a1d20;
+    --popover-foreground: #f2f4f5;
+    --primary: #3aa8ae;
+    --primary-foreground: #0b1214;
+    --secondary: #23272b;
+    --secondary-foreground: #f2f4f5;
+    --muted: #23272b;
+    --muted-foreground: #9ba1a8;
+    --accent: #23272b;
+    --accent-foreground: #7fd0d4;
+    --destructive: oklch(0.704 0.191 22.216);
+    --border: oklch(1 0 0 / 10%);
+    --input: oklch(1 0 0 / 14%);
+    --ring: #3aa8ae;
+
+    --brand-accent: #7fd0d4;
+    --brand-panel: #0b0d0e;
+    --brand-panel-foreground: #fcfcfa;
+    --champagne: #d8c7a0;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-18px) rotate(6deg); }
+}
+
+@keyframes twinkle {
+    0%, 100% { opacity: 0.15; transform: translateY(0) scale(0.8); }
+    50% { opacity: 1; transform: translateY(-14px) scale(1.2); }
+}
+
+@keyframes flap {
+    0%, 100% { transform: scaleX(1); }
+    50% { transform: scaleX(0.25); }
+}
+
+@keyframes drift {
+    0%, 100% { transform: translate(0, 0) rotate(-4deg); }
+    25% { transform: translate(36px, -28px) rotate(6deg); }
+    50% { transform: translate(72px, 8px) rotate(-3deg); }
+    75% { transform: translate(30px, 36px) rotate(5deg); }
+}
+
+@keyframes rise {
+    from { opacity: 0; transform: translateY(28px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes drop {
+    from { opacity: 0; transform: translateY(-100%); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shimmer {
+    to { background-position: 200% center; }
+}
+
+@keyframes ecg {
+    from { stroke-dashoffset: 260; }
+    to { stroke-dashoffset: -740; }
+}
+
+@layer base {
+    * {
+        @apply border-border outline-ring/50;
+    }
+    body {
+        @apply bg-background text-foreground;
+    }
+    html {
+        @apply font-sans scroll-smooth;
+    }
+    h1, h2, h3 {
+        @apply font-serif tracking-tight;
+    }
+}
